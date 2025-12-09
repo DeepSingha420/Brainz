@@ -8,7 +8,8 @@ st.write("Digit guesser using Neural Networks")
 
 st.info("""
 **Instruction:**\n
-    Draw BIG, BOLD and CENTERED single digit (0-9).""")
+    -> Draw BIG, BOLD and CENTERED single digit (0-9).
+    -> It must cover the most area of the canvas.""")
 
 st.warning("""**N.B.** This is a simple neural network model with less epochs, so it is not perfect and may misclassify digits.""")
 
@@ -73,3 +74,4 @@ if st.button("Guess"):
             st.write("Other possibilities:")
             st.write(f"1. {digit2} with confidence {confidence2*100:.2f}%")
             st.write(f"2. {digit3} with confidence {confidence3*100:.2f}%")
+
