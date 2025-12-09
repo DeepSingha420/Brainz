@@ -21,9 +21,23 @@ if __name__ == "__main__":
 
     print("Training...")
     neural.train(X,y,epochs=2000)
-    neural.back()
+    print(f"Before Saving Weights: \n{neural.forward(X)}")
 
-    print("Output:")
-    print(neural.forward())
+    neural.save_weights("nn_weights.npz")
+
+    print("Weights saved.")
+
+    print("Reseting weights and loading from file...")
+    neural2 = NN(layer_size=[3,10,1])
+
+    print(f"Without Training: \n{neural2.forward(X)}")
+
+    print("Loading weights...")
+    neural2.load_weights("nn_weights.npz")
+
+    print("Loaded weights.")
+
+    print(f"After Loading Weights: \n{neural2.forward(X)}")
+
 
 

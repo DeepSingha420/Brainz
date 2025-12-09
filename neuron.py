@@ -15,14 +15,14 @@ class NN():
 
 
     def train(self, X, y, epochs = 1500):
-        self.input = X
         self.y = y
         for epoch in range(epochs):
-            self.forward()
+            self.forward(X)
             self.back()
 
-    def forward(self):
+    def forward(self, X):
         #inputs = inputs.astype(float)
+        self.input = X
         self.layer1 = sigmoid(np.dot(self.input, self.weights1))
         self.output = sigmoid(np.dot(self.layer1, self.weights2))
         return self.output
