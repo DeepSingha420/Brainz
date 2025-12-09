@@ -17,14 +17,13 @@ if __name__ == "__main__":
     
     y = np.array([[0],[1],[1],[0]])
     
-    neural = NN(X,y)
+    neural = NN(layer_size=[3,10,1])
 
     print("Training...")
-    for i in range(1500):
-        neural.forward()
-        neural.back()
+    neural.train(X,y,epochs=2000)
+    neural.back()
 
     print("Output:")
-    print(neural.output)
+    print(neural.forward())
 
 
