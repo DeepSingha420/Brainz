@@ -10,15 +10,19 @@ class NN():
         hidden_size = layer_size[1]
         output_size = layer_size[2]
         
-        self.weights1 = np.random.rand(input_size,hidden_size)
-        self.weights2 = np.random.rand(hidden_size,output_size)
+        self.weights1 = np.random.rand(input_size,hidden_size) - 0.5
+        self.weights2 = np.random.rand(hidden_size,output_size) - 0.5
 
 
-    def train(self, X, y, epochs = 1500):
-        self.y = y
+    def train(self, X, y, epochs = 1, rate = 0.1):
         for epoch in range(epochs):
-            self.forward(X)
-            self.back()
+            for i in range(len(X)):
+                input = X[i].reshape(1, -1)
+                self.input = input
+                target = y[i].reshape(1, -1)
+                self.y = target
+                self.forward(input)
+                self.back(rate)
 
     def forward(self, X):
         #inputs = inputs.astype(float)
@@ -27,14 +31,16 @@ class NN():
         self.output = sigmoid(np.dot(self.layer1, self.weights2))
         return self.output
 
-    def back(self):
+    def back(self, rate = 0.1):
             
-            weight2_d = np.dot(self.layer1.T, (2*(self.y - self.output)*sigmoid_d(self.output)))
+            error = self.y - self.output
+            
+            weight2_d = np.dot(self.layer1.T, (2*error*sigmoid_d(self.output)))
 
-            weight1_d = np.dot(self.input.T, (np.dot(2*(self.y - self.output)*sigmoid_d(self.output), self.weights2.T)*sigmoid_d(self.layer1)))
+            weight1_d = np.dot(self.input.T, (np.dot(2*error*sigmoid_d(self.output), self.weights2.T)*sigmoid_d(self.layer1)))
 
-            self.weights1 += weight1_d
-            self.weights2 += weight2_d
+            self.weights1 += weight1_d * rate
+            self.weights2 += weight2_d * rate
 
     def save_weights(self, filename):
         np.savez(filename, weights1=self.weights1, weights2=self.weights2)
