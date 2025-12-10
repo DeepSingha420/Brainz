@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+import scipy.ndimage
 from streamlit_drawable_canvas import st_canvas
 from neuron import NN
 
@@ -8,12 +9,18 @@ st.write("Digit guesser using Neural Networks")
 
 st.info("""
 **Instruction:**\n
-    -> Draw BIG, BOLD and CENTERED single digit (0-9).
-    -> It must cover the most area of the canvas.""")
+    Draw BIG, BOLD and CENTERED single digit (0-9).""")
 
 st.warning("""**N.B.** This is a simple neural network model with less epochs, so it is not perfect and may misclassify digits.""")
 
 @st.cache_resource
+
+def center(img):
+    cx, cy = scipy.ndimage.center_of_mass(img)
+    rows, cols = img.shape
+    shiftx = np.round(cols/2.0 - cx).astype(int)
+    shifty = np.round(rows/2.0 - cy).astype(int)
+    return scipy.ndimage.shift(img, (shifty, shiftx), cval=0)
 
 def load_model():
     model = NN(layer_size=[784, 100, 10])
@@ -44,7 +51,12 @@ if st.button("Guess"):
         img = canvas_result.image_data[:,:,0]
 
         sm_img = img[::10, ::10]
-        sm_img = sm_img/255.0
+        sm_img = sm_img.astype(float)/255.0
+
+        if np.sum(sm_img) > 0:
+            sm_img = center(sm_img)
+        
+        sm_img = np.clip(sm_img, 0, 1)
 
         inputs = sm_img.reshape(784)
 
@@ -74,4 +86,3 @@ if st.button("Guess"):
             st.write("Other possibilities:")
             st.write(f"1. {digit2} with confidence {confidence2*100:.2f}%")
             st.write(f"2. {digit3} with confidence {confidence3*100:.2f}%")
-
